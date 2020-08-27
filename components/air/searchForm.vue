@@ -186,11 +186,24 @@ export default {
 
     // 触发和目标城市切换时触发
     handleReverse() {
-      const { departCity, departCode, arrivalCity, arrivalCode } = this.form;
-      this.form.departCity = arrivalCity;
-      this.form.departCode = arrivalCode;
-      this.form.arrivalCity = departCity;
-      this.form.arrivalCode = departCode;
+      // const { departCity, departCode, arrivalCity, arrivalCode } = this.form;
+      // this.form.departCity = arrivalCity;
+      // this.form.departCode = arrivalCode;
+      // this.form.arrivalCity = departCity;
+      // this.form.arrivalCode = departCode;
+
+      //解构赋值的简便写法; [a,b,c] = [c, a, b] a = c, b = a, c = b
+      [
+        this.form.departCity,
+        this.form.departCode,
+        this.form.destCity,
+        this.form.destCode,
+      ] = [
+        this.form.destCity,
+        this.form.destCode,
+        this.form.departCity,
+        this.form.departCode,
+      ];
     },
 
     // 提交表单是触发
@@ -198,6 +211,17 @@ export default {
       console.log(this.form);
       //在url上带上form表单中的参数;
       this.$router.push({ path: "/air/flights", query: this.form });
+    },
+
+    // tab切换时触发
+    handleSearchTab(item, index) {
+      if (index === 1) {
+        this.$confirm("目前暂不支持往返，请使用单程选票！", "提示", {
+          confirmButtonText: "确定",
+          showCancelButton: false,
+          type: "warning",
+        });
+      }
     },
   },
   mounted() {},

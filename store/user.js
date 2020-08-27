@@ -12,10 +12,9 @@ export const state = () => ({
   userInfo: {
     token: "",
     user: {},
-    newData: {
-      florence: 666
-    }
   },
+  form: {}
+
 })
 
 //mutations用于修改公共数据的方法；
@@ -33,13 +32,11 @@ export const mutations = {
     }
     state.userInfo = {};
   },
-  //测试mutation
-  changeData(state, data) {
-    console.log(state);
-    console.log(data);
-    // state.newData.florence = data;
-    state.userInfo.newData.florence = data;
+  //保存验证成功后的数据;
+  setRegisterInfo(state, data) {
+    state.form = data
   }
+
 };
 
 //用于发数据中的异步请求的方法；
@@ -58,5 +55,17 @@ export const actions = {
       commit("setUserInfo", data);
       return data;
     })
+  },
+  register(context, form) {
+    console.log(context);
+    console.log(form);
+    return this.$axios({
+      url: `/accounts/register`,
+      method: "POST",
+      data: form,
+    }).then((res) => {
+      //验证成功，跳转首页；
+      return res.user;
+    });
   }
 };
