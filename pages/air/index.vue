@@ -43,7 +43,12 @@
 </template>
 
 <script>
-export default {};
+import SearchForm from "../../components/air/searchForm";
+export default {
+  components: {
+    SearchForm,
+  },
+};
 </script>
 
 <style scoped lang="less">
