@@ -39,7 +39,9 @@
       </el-form-item>
       <el-form-item label="出发时间">
         <!-- change 用户确认选择日期时触发 -->
+        <!-- :pickerOptions="disableBeforeDay" 用于禁用当天日期前的所有日期 -->
         <el-date-picker
+          :pickerOptions="disableBeforeDay"
           v-model="form.departTime"
           type="date"
           placeholder="请选择日期"
@@ -58,6 +60,7 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   data() {
     return {
@@ -72,6 +75,12 @@ export default {
         arrivalCity: "",
         arrivalCode: "",
         departTime: "",
+      },
+      //禁用当天日期前的所有日期选择；
+      disableBeforeDay: {
+        disabledDate(time) {
+          return time.getTime() < new Date().setDate(new Date().getDate() - 1);
+        },
       },
     };
   },
@@ -103,7 +112,11 @@ export default {
       if (backList.length > 0) {
         //不在下拉列表中选择，则默认选择第一项;
         this.form.departCity = backList[0].value;
-        this.form.departCity = backList[0].sort;
+        this.form.departCode = backList[0].sort;
+      } else {
+        this.$message.warning("查无此城！");
+        //清空输入框；
+        this.form.departCity = "";
       }
       cb(backList);
     },
@@ -129,7 +142,11 @@ export default {
       if (backList.length > 0) {
         //不在下拉列表中选择，则默认选择第一项;
         this.form.departCity = backList[0].value;
-        this.form.departCity = backList[0].sort;
+        this.form.departCode = backList[0].sort;
+      } else {
+        this.$message.warning("查无此城！");
+        //清空输入框；
+        this.form.arrivalCity = "";
       }
       cb(backList);
     },
@@ -149,19 +166,39 @@ export default {
     // 出发城市下拉选择时触发
     handleDepartSelect(item) {
       console.log(item);
+      //将值赋值给form表单中的数据;
+      this.form.departCity = item.value;
+      this.form.departCode = item.sort;
     },
 
     // 目标城市下拉选择时触发
-    handleDestSelect(item) {},
+    handleDestSelect(item) {
+      console.log(item);
+      this.form.arrivalCity = item.value;
+      this.form.arrivalCode = item.sort;
+    },
 
     // 确认选择日期时触发
-    handleDate(value) {},
+    handleDate(value) {
+      console.log(value);
+      this.form.departTime = moment(value).format("YYYY-MM-DD");
+    },
 
     // 触发和目标城市切换时触发
-    handleReverse() {},
+    handleReverse() {
+      const { departCity, departCode, arrivalCity, arrivalCode } = this.form;
+      this.form.departCity = arrivalCity;
+      this.form.departCode = arrivalCode;
+      this.form.arrivalCity = departCity;
+      this.form.arrivalCode = departCode;
+    },
 
     // 提交表单是触发
-    handleSubmit() {},
+    handleSubmit() {
+      console.log(this.form);
+      //在url上带上form表单中的参数;
+      this.$router.push({ path: "/air/flights", query: this.form });
+    },
   },
   mounted() {},
 };
