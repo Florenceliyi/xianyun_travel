@@ -47,7 +47,7 @@
             <img :src="item.cover" />
             <el-row class="layer-bar" type="flex" justify="space-between">
               <span>{{item.departCity}}-{{item.destCity}}</span>
-              <span>￥699</span>
+              <span>￥{{item.price}}</span>
             </el-row>
           </nuxt-link>
         </el-col>
@@ -64,15 +64,50 @@ export default {
   },
   data() {
     return {
-      sales: [],
+      sales: [
+        {
+          cover:
+            "https://imgsrc.baidu.com/baike/pic/item/a71ea8d3fd1f41340d8f3dec281f95cad0c85ee3.jpg",
+          departCity: "广州",
+          departCode: "CAN",
+          departDate: "2019-06-17",
+          destCity: "上海",
+          destCode: "SHA",
+          price: 760,
+        },
+        {
+          cover: "../../_nuxt/assets/images/tokyo.jpg",
+          departCity: "广州",
+          departCode: "CAN",
+          departDate: "2019-06-17",
+          destCity: "东京",
+          destCode: "SHA",
+          price: 880,
+        },
+        {
+          cover: "../../_nuxt/assets/images/kyoto.jpg",
+          departCity: "广州",
+          departCode: "CAN",
+          departDate: "2019-06-17",
+          destCity: "京都",
+          destCode: "SHA",
+          price: 960,
+        },
+        {
+          cover: "../../_nuxt/assets/images/tanukikoji.jpg",
+          departCity: "广州",
+          departCode: "CAN",
+          departDate: "2019-06-17",
+          destCity: "札幌",
+          destCode: "SHA",
+          price: 1000,
+        },
+      ],
     };
   },
   created() {
     //进来请求并且加载特价机票数据;
-    this.$axios.get("/airs/sale").then((res) => {
-      console.log(res.data.data);
-      this.sales = res.data.data;
-    });
+    this.$axios.get("/airs/sale").then(console.log);
   },
 };
 </script>
