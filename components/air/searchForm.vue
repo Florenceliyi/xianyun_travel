@@ -29,6 +29,7 @@
       </el-form-item>
       <el-form-item label="到达城市">
         <el-autocomplete
+          :trigger-on-focus="false"
           v-model="form.arrivalCity"
           :fetch-suggestions="queryDestSearch"
           placeholder="请搜索到达城市"
@@ -67,7 +68,9 @@ export default {
       currentTab: 0,
       form: {
         departCity: "",
+        departCode: "",
         arrivalCity: "",
+        arrivalCode: "",
         departTime: "",
       },
     };
@@ -80,40 +83,55 @@ export default {
 
     // 出发城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
-    queryDepartSearch(value, cb) {
+    async queryDepartSearch(value, cb) {
       console.log(value);
       if (value.trim().length == 0) {
         return;
       }
       //调用城市请求接口方法;
       //返回一个promise对象;
-      this.queryCity(value).then((res) => {
-        console.log(res);
-        const backList = res;
-        if (backList) {
-          // console.log(backList);
-          cb(backList);
-        }
-      });
+      // this.queryCity(value).then((res) => {
+      //   console.log(res);
+      //   const backList = res;
+      //   if (backList) {
+      //     // console.log(backList);
+      //     cb(backList);
+      //   }
+      // });
+      //async await改写promise
+      const backList = await this.queryCity(value);
+      if (backList.length > 0) {
+        //不在下拉列表中选择，则默认选择第一项;
+        this.form.departCity = backList[0].value;
+        this.form.departCity = backList[0].sort;
+      }
+      cb(backList);
     },
 
     // 目标城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
-    queryDestSearch(value, cb) {
+    async queryDestSearch(value, cb) {
       if (value.trim().length == 0) {
         return;
       }
       //cb方法传递一个数组带有value属性的对象，其值为搜索出来的值；
       // cb([{ value: 1 }, { value: 2 }, { value: 3 }]);
       // const backList = this.queryCity(value);
-      this.queryCity(value).then((res) => {
-        console.log(res);
-        const backList = res;
-        if (backList) {
-          // console.log(backList);
-          cb(backList);
-        }
-      });
+      // this.queryCity(value).then((res) => {
+      //   console.log(res);
+      //   const backList = res;
+      //   if (backList) {
+      //     // console.log(backList);
+      //     cb(backList);
+      //   }
+      // });
+      const backList = await this.queryCity(value);
+      if (backList.length > 0) {
+        //不在下拉列表中选择，则默认选择第一项;
+        this.form.departCity = backList[0].value;
+        this.form.departCity = backList[0].sort;
+      }
+      cb(backList);
     },
 
     //搜索城市的方法封装;
