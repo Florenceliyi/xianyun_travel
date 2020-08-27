@@ -160,13 +160,27 @@ export default {
           // 注册提交
           delete this.form.checkPassword;
 
-          this.$axios({
-            url: `/accounts/register`,
-            method: "POST",
-            data: this.form,
-          }).then((res) => {
-            //验证成功，跳转首页；
-            console.log(res.data);
+          // this.$axios({
+          //   url: `/accounts/register`,
+          //   method: "POST",
+          //   data: this.form,
+          // }).then((res) => {
+          //   //验证成功，跳转首页；
+          //   console.log(res.data);
+          // });
+
+          /*this.$store.dispatch("user/register", this.form)返回一个promise对象可以继续调用then方法*/
+          this.$store.dispatch("user/register", this.form).then((res) => {
+            //注册返回带有token和用户信息，直接调用登录的方法储存用户信息自动登录即可;
+            // 成功提示
+            this.$message({
+              message: "注册成功，请登录",
+              type: "success",
+            });
+            // 跳转到首页
+            setTimeout(() => {
+              this.$router.replace("/");
+            }, 1000);
           });
         }
       });
