@@ -30,7 +30,7 @@
       <el-form-item label="到达城市">
         <el-autocomplete
           :trigger-on-focus="false"
-          v-model="form.arrivalCity"
+          v-model="form.destCity"
           :fetch-suggestions="queryDestSearch"
           placeholder="请搜索到达城市"
           @select="handleDestSelect"
@@ -72,8 +72,8 @@ export default {
       form: {
         departCity: "",
         departCode: "",
-        arrivalCity: "",
-        arrivalCode: "",
+        destCity: "",
+        destCode: "",
         departTime: "",
       },
       //禁用当天日期前的所有日期选择；
@@ -111,7 +111,8 @@ export default {
       const backList = await this.queryCity(value);
       if (backList.length > 0) {
         //不在下拉列表中选择，则默认选择第一项;
-        this.form.departCity = backList[0].value;
+        const str = backList[0].value.slice(0, 2);
+        this.form.departCity = str;
         this.form.departCode = backList[0].sort;
       } else {
         this.$message.warning("查无此城！");
@@ -141,12 +142,16 @@ export default {
       const backList = await this.queryCity(value);
       if (backList.length > 0) {
         //不在下拉列表中选择，则默认选择第一项;
-        this.form.departCity = backList[0].value;
-        this.form.departCode = backList[0].sort;
+        //切割字符串不要“市”
+        // console.log(backList[0].value.length);
+
+        const str = backList[0].value.slice(0, 2);
+        this.form.destCity = str;
+        this.form.destCode = backList[0].sort;
       } else {
         this.$message.warning("查无此城！");
         //清空输入框；
-        this.form.arrivalCity = "";
+        this.form.destCity = "";
       }
       cb(backList);
     },
@@ -165,17 +170,21 @@ export default {
 
     // 出发城市下拉选择时触发
     handleDepartSelect(item) {
-      console.log(item);
+      // console.log(item);
       //将值赋值给form表单中的数据;
-      this.form.departCity = item.value;
+
+      const str = item.value.slice(0, 2);
+
+      this.form.departCity = str;
       this.form.departCode = item.sort;
     },
 
     // 目标城市下拉选择时触发
     handleDestSelect(item) {
-      console.log(item);
-      this.form.arrivalCity = item.value;
-      this.form.arrivalCode = item.sort;
+      const str = item.value.slice(0, 2);
+      // console.log("当前选择的目标城市：" + str);
+      this.form.destCity = str;
+      this.form.destCode = item.sort;
     },
 
     // 确认选择日期时触发
@@ -186,11 +195,11 @@ export default {
 
     // 触发和目标城市切换时触发
     handleReverse() {
-      // const { departCity, departCode, arrivalCity, arrivalCode } = this.form;
-      // this.form.departCity = arrivalCity;
-      // this.form.departCode = arrivalCode;
-      // this.form.arrivalCity = departCity;
-      // this.form.arrivalCode = departCode;
+      // const { departCity, departCode, destCity, destCode } = this.form;
+      // this.form.departCity = destCity;
+      // this.form.departCode = destCode;
+      // this.form.destCity = departCity;
+      // this.form.destCode = departCode;
 
       //解构赋值的简便写法; [a,b,c] = [c, a, b] a = c, b = a, c = b
       [

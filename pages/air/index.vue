@@ -1,5 +1,6 @@
 <template>
   <section class="container">
+    <!-- <img src="@/assets/images/01.jpg" alt /> -->
     <h2 class="air-title">
       <span class="iconfont iconfeiji"></span>
       <i>国内机票</i>
@@ -58,6 +59,9 @@
 
 <script>
 import SearchForm from "../../components/air/searchForm";
+import images1 from "@/assets/images/tokyo.jpg";
+import images2 from "@/assets/images/kyoto.jpg";
+import images3 from "@/assets/images/tanukikoji.jpg";
 export default {
   components: {
     SearchForm,
@@ -76,30 +80,30 @@ export default {
           price: 760,
         },
         {
-          cover: "../../_nuxt/assets/images/tokyo.jpg",
+          cover: images1,
           departCity: "广州",
           departCode: "CAN",
           departDate: "2019-06-17",
-          destCity: "东京",
-          destCode: "SHA",
+          destCity: "北京",
+          destCode: "BJS",
           price: 880,
         },
         {
-          cover: "../../_nuxt/assets/images/kyoto.jpg",
+          cover: images2,
           departCity: "广州",
           departCode: "CAN",
           departDate: "2019-06-17",
-          destCity: "京都",
-          destCode: "SHA",
+          destCity: "天津",
+          destCode: "TSN",
           price: 960,
         },
         {
-          cover: "../../_nuxt/assets/images/tanukikoji.jpg",
+          cover: images3,
           departCity: "广州",
           departCode: "CAN",
           departDate: "2019-06-17",
-          destCity: "札幌",
-          destCode: "SHA",
+          destCity: "天津",
+          destCode: "TSN",
           price: 1000,
         },
       ],
