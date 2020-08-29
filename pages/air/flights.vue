@@ -5,7 +5,7 @@
       <div class="flights-content">
         <!-- 过滤条件 -->
         <!-- -->
-        <flightsFilters :data="cacheFlightsData"></flightsFilters>
+        <flightsFilters :data="cacheFlightsData" @setDataList="setDataList"></flightsFilters>
 
         <!-- 航班头部布局 -->
         <flightsListHead></flightsListHead>
@@ -24,7 +24,7 @@
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
               :current-page="pageIndex"
-              :page-sizes="[2, 4, 6, 8]"
+              :page-sizes="[5, 10, 15, 20]"
               :page-size="pageSize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="flightsData.total"
@@ -58,19 +58,19 @@ export default {
       flightsData: {}, // 航班总数据
       dataList: [], // 航班列表数据，用于循环flightsItem组件，单独出来是因为要分页
       pageIndex: 1, // 当前页数
-      pageSize: 2, // 显示条数
+      pageSize: 5, // 显示条数
       cacheFlightsData: {
         //缓存一份数据，只会修改一次
         flights: [],
         info: {},
         options: {},
       },
-      // flightsData: {
-      //   // 航班总数据
-      //   flights: [],
-      //   info: {},
-      //   options: {},
-      // },
+      flightsData: {
+        // 航班总数据
+        flights: [],
+        info: {},
+        options: {},
+      },
     };
   },
   mounted() {
@@ -87,15 +87,16 @@ export default {
         // this.dataList = this.flightsData.flights;
         // 缓存一份新的列表数据数据，这个列表不会被修改
         // 而flightsData会被修改
-        this.cacheFlightsData = res.data;
-        console.log("要传给子组件的数据");
-        console.log(this.cacheFlightsData);
+        this.cacheFlightsData = { ...res.data };
+        // console.log("要传给子组件的数据");
+        // console.log(this.cacheFlightsData);
         this.setDataList(); // 初始化dataList数据，获取1 - 10条
       });
     },
     // 设置dataList数据
     setDataList(arr) {
       // 如果有新数据从第一页开始显示
+      // console.log(arr);
       if (arr) {
         this.pageIndex = 1;
         this.flightsData.flights = arr;
