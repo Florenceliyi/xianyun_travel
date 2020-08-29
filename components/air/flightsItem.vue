@@ -97,7 +97,7 @@ export default {
     showFlightsList() {
       this.isShowFLlist = !this.isShowFLlist;
     },
-    // 选定按钮触发跳转
+    // 选定按钮触发跳转,传递哈希值
     handleChoose(id, seatId) {
       this.$router.push({
         path: "/air/order",

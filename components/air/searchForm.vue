@@ -42,7 +42,7 @@
         <!-- :pickerOptions="disableBeforeDay" 用于禁用当天日期前的所有日期 -->
         <el-date-picker
           :pickerOptions="disableBeforeDay"
-          v-model="form.departTime"
+          v-model="form.departDate"
           type="date"
           placeholder="请选择日期"
           style="width: 100%;"
@@ -74,7 +74,7 @@ export default {
         departCode: "",
         destCity: "",
         destCode: "",
-        departTime: "",
+        departDate: "",
       },
       //禁用当天日期前的所有日期选择；
       disableBeforeDay: {
@@ -190,7 +190,7 @@ export default {
     // 确认选择日期时触发
     handleDate(value) {
       console.log(value);
-      this.form.departTime = moment(value).format("YYYY-MM-DD");
+      this.form.departDate = moment(value).format("YYYY-MM-DD");
     },
 
     // 触发和目标城市切换时触发
@@ -218,6 +218,11 @@ export default {
     // 提交表单是触发
     handleSubmit() {
       console.log(this.form);
+      //提交表单前添加到本地存储;
+      const airs = JSON.parse(localStorage.getItem("airs") || "[]");
+      airs.push(this.form);
+      localStorage.setItem("airs", JSON.stringify(airs));
+
       //在url上带上form表单中的参数;
       this.$router.push({ path: "/air/flights", query: this.form });
     },

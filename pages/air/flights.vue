@@ -76,6 +76,12 @@ export default {
       },
     };
   },
+  watch: {
+    //监听是否有路由跳转，有则渲染新数据；
+    $route() {
+      this.getFlightsData();
+    },
+  },
   mounted() {
     this.getFlightsData();
   },
