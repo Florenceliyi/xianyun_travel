@@ -62,6 +62,7 @@
         </el-form>
 
         <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
+        <input type="hidden" :value="allPrice" />
       </div>
     </div>
   </div>
@@ -94,9 +95,9 @@ export default {
     },
   },
   watch: {
-    // data(val) {
-    //   console.log(val);
-    // },
+    data(val) {
+      console.log(val);
+    },
     // users: {
     //   handler(val) {
     //     console.log(val);
@@ -107,11 +108,33 @@ export default {
     //   console.log(val);
     // },
   },
+  computed: {
+    // 计算总价格
+    allPrice() {
+      console.log(123);
+      let price = 0;
+      let len = this.users.length;
+
+      price += this.data.seat_infos.org_settle_price * len;
+
+      this.insurances.forEach((v) => {
+        price += this.data.insurances[v - 1].price * len;
+      });
+
+      price += this.data.airport_tax_audlet * len;
+
+      // 触发设置总金额事件
+      this.$emit("setAllPrice", price);
+
+      return price;
+    },
+  },
   methods: {
     // 添加乘机人
     handleAddUsers() {
       //超过5个不能再添加;
-      if (user.length > 5) {
+      if (this.users.length >= 5) {
+        this.$message.warning("最多只能添加5位乘机人");
         return;
       }
       this.users = [
@@ -122,10 +145,7 @@ export default {
         },
       ];
     },
-    //选择下拉框组件选项;
-    selectId(id) {
-      console.log(id);
-    },
+
     // 选择保险
     handleInsurance(id, e) {
       console.log(e);
@@ -144,7 +164,7 @@ export default {
       console.log(this.insurances);
     },
     // 移除乘机人
-    handleDeleteUser() {
+    handleDeleteUser(index) {
       this.users.splice(index, 1);
     },
 
