@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+
+  <script>
+    let flag = true;
+    setTimeout(() => {
+      flag = false;
+    }, 10000)
+
+    async function lunxun() {
+      if (flag) {
+        console.log("请求服务器..." + new Date().getTime());
+        return Promise.resolve(false)
+      } else {
+        console.log("支付成功");
+        return Promise.resolve(true)
+      }
+    }
+
+    let timeID = setInterval(async () => {
+      let res = await lunxun();
+      // 如果res是true 就停止轮询
+      if (res) {
+        clearInterval(timeID);
+        return;
+      }
+    }, 2000)
+
+  </script>
+</body>
+
+</html>

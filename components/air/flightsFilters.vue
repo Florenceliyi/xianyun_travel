@@ -88,8 +88,8 @@ export default {
   mounted() {
     //找不到数据时的异步回调；
     setTimeout(() => {
-      //   console.log("父组件传过来的数据");
-      //   console.log(this.data);
+      console.log("父组件传过来的数据");
+      console.log(this.data);
       //   console.log(this.newAirInfo);
     }, 500);
   },

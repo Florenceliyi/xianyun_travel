@@ -61,7 +61,7 @@
           </el-form-item>
         </el-form>
 
-        <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
+        <el-button to type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
         <input type="hidden" :value="allPrice" />
       </div>
     </div>
@@ -229,9 +229,15 @@ export default {
         },
       })
         .then((res) => {
+          console.log(res);
+          const { id } = res.data.data;
+          console.log(id);
           // 跳转到付款页
           this.$router.push({
             path: "/air/pay",
+            query: {
+              id,
+            },
           });
           this.$message({
             message: "正在生成订单！请稍等",
