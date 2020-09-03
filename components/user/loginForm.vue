@@ -88,13 +88,32 @@ export default {
           this.$store.dispatch("user/login", this.form).then((res) => {
             // 成功提示
             this.$message({
-              message: "登录成功，正在跳转",
+              message: "登录成功，正在跳转支付页",
               type: "success",
             });
-            // 跳转到首页
-            setTimeout(() => {
-              this.$router.replace("/");
-            }, 1000);
+            //登录跳转前，先判断是否有跳转过来的路由信息；
+
+            if (this.$store.state.order.sourceURL) {
+              //登录成功后跳转到支付页面；
+              // 跳转到支付页；
+
+              setTimeout(() => {
+                this.$router.replace(this.$store.state.order.sourceURL);
+                //跳转成功后清空路由信息；
+                this.$store.commit("order/clearSourceURL");
+              }, 1000);
+            } else {
+              //没有路由信息，跳转到登录页；
+              // 成功提示
+              this.$message({
+                message: "登录成功，正在跳转首页",
+                type: "success",
+              });
+              setTimeout(() => {
+                this.$router.replace("/");
+                //跳转成功后清空路由信息；
+              }, 1000);
+            }
           });
         }
       });

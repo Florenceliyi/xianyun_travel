@@ -257,16 +257,23 @@ export default {
         air: this.data.id,
       };
 
-      const {
-        user: { userInfo },
-      } = this.$store.state;
-
+      const { token } = this.$store.state.user.userInfo;
+      console.log(this.$route);
+      //判断是否有token值
+      if (!token) {
+        //带上当前的url信息，跳转登录页面；
+        let url = this.$route.fullPath;
+        //触发vuex的公共方法注意要加上文件夹名字；
+        this.$store.commit("order/setSourceURL", url);
+        this.$message.warning("请先登录！");
+        this.$router.push("/user/login");
+      }
       this.$axios({
         url: `/airorders`,
         method: "POST",
         data: orderData,
         headers: {
-          Authorization: `Bearer ${userInfo.token || "NO TOKEN"}`,
+          Authorization: `Bearer ${token || "NO TOKEN"}`,
         },
       })
         .then((res) => {
