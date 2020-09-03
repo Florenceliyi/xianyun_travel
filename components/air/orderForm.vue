@@ -51,7 +51,7 @@
           <el-form-item label="手机">
             <el-input placeholder="请输入内容" v-model="contactPhone">
               <template slot="append">
-                <el-button @click="handleSendCaptcha">发送验证码</el-button>
+                <el-button @click="handleSendCaptcha">{{counting.cons}}</el-button>
               </template>
             </el-input>
           </el-form-item>
@@ -84,7 +84,14 @@ export default {
       contactName: "", // 联系人名字
       contactPhone: "", // 联系人电话
       captcha: "", // 验证码
-      invoice: false, // 发票
+      invoice: false, // 发票,
+      //倒计时标识;
+      counting: {
+        isGoing: false,
+        cons: "点击发送验证码",
+        time: 60,
+        timerId: null,
+      },
     };
   },
   props: {
@@ -187,20 +194,54 @@ export default {
         });
         return;
       }
+      //倒计时中，不发送请求;
+      if (this.counting.isGoing) {
+        return;
+      } else {
+        console.log(this.counting.isGoing);
+        console.log("定时器已经开启");
 
-      const backData = await this.$axios({
-        url: `/captchas`,
-        method: "POST",
-        data: {
-          tel: this.contactPhone,
-        },
-      });
-      const { code } = backData.data;
-      this.$confirm(`模拟手机验证码为：${code}`, "提示", {
-        confirmButtonText: "确定",
-        showCancelButton: false,
-        type: "warning",
-      });
+        const backData = await this.$axios({
+          url: `/captchas`,
+          method: "POST",
+          data: {
+            tel: this.contactPhone,
+          },
+        });
+        const { code } = backData.data;
+        if (code) {
+          //数据已经返回了
+          const res = await this.$confirm(`模拟手机验证码为：${code}`, "提示", {
+            confirmButtonText: "确定",
+            showCancelButton: false,
+            type: "warning",
+          });
+          if (confirm) {
+            //开启定时器标识;
+            this.counting.isGoing = true;
+            //开启一个60s的定时器
+            this.counting.timerId = setInterval(() => {
+              this.counting.time--;
+              this.counting.cons = `剩余${this.counting.time}秒重新发送`;
+              console.log(this.counting.time);
+              if (this.counting.time < 0) {
+                clearInterval(this.counting.timerId);
+                //重新设置文本；
+                this.counting.cons = "重新发送验证码";
+                //重新设定时间;
+                this.counting.time = 60;
+                //关闭定时器开启标识；
+                this.counting.isGoing = false;
+              }
+            }, 1000);
+          } else {
+            console.log("取消发送");
+          }
+        } else {
+          //验证码不通过；
+          this.$message.warning("验证码不通过，请重新输入");
+        }
+      }
     },
 
     // 提交订单
