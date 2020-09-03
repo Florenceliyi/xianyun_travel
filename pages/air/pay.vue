@@ -35,24 +35,37 @@ export default {
       timerId: null,
     };
   },
+  watch: {
+    //需要页面加载完毕后，获取参数；
+    // 该回调将会在侦听开始之后被立即调用
+    // d: {
+    //   handler: 'someMethod',
+    //   immediate: true
+    // },
 
-  mounted() {
-    // 这个处理方法是有缺陷的，不100%准确
-    // userInfo在页面加载完才赋值
-    setTimeout(() => {
-      this.renderQRCode();
-
-      //进入页面开始轮询；
-      this.timerId = setInterval(async () => {
-        const hasPay = await this.isPay();
-        //支付成功，关掉轮询的定时器；
-        if (hasPay) {
-          console.log("支付成功。。。");
-          clearInterval(this.timerId);
-          return;
+    "$store.state.user.userInfo.token": {
+      handler() {
+        console.log("执行监听器,监听到有token值的时候，执行二维码的渲染操作");
+        if (this.$store.state.user.userInfo.token) {
+          console.log(this.$store.state.user.userInfo.token);
+          this.renderQRCode();
         }
-      }, 3000);
-    }, 200);
+      },
+      //页面打开的时候先触发一次；
+      immediate: true,
+    },
+  },
+  mounted() {
+    //进入页面开始轮询；
+    this.timerId = setInterval(async () => {
+      const hasPay = await this.isPay();
+      //支付成功，关掉轮询的定时器；
+      if (hasPay) {
+        console.log("支付成功。。。");
+        clearInterval(this.timerId);
+        return;
+      }
+    }, 3000);
   },
   methods: {
     renderQRCode() {
@@ -82,7 +95,7 @@ export default {
         api,
         user: { userInfo },
       } = this.$store.state;
-
+      //发送支付请求；
       return this.$axios({
         url: `airorders/checkpay`,
         method: "POST",
